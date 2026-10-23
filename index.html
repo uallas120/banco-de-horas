@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Banco de Horas">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0f2a43">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-512.png">
+<link rel="icon" href="icon-192.png">
+<title>Banco de Horas</title>
+<style>
+:root{--tinta:#0f2a43;--fundo:#eef2f6;--card:#fff;--linha:#d5dde6;--mut:#5d7186;--pos:#0a8f6f;--neg:#c93c3c;--verde:#3ddbb5}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--fundo);color:var(--tinta);padding-top:env(safe-area-inset-top,0);padding-bottom:calc(76px + env(safe-area-inset-bottom,0))}
+.hidden{display:none!important}
+main{max-width:560px;margin:0 auto;padding:16px}
+section{display:none}section.on{display:block}
+.hero{background:var(--tinta);color:#fff;border-radius:18px;padding:14px;margin-bottom:16px}
+.dn{display:flex;align-items:center;gap:8px}
+.seta{flex:0 0 52px;height:52px;border-radius:12px;border:1px solid #ffffff44;background:none;color:#fff;font-size:1.6rem}
+#data{flex:1;min-width:0;height:52px;padding:0 8px;text-align:center;font-size:1.1rem;font-weight:700;background:transparent;color:#fff;border:1px solid #ffffff44;border-radius:12px;color-scheme:dark}
+#h-sem{margin:10px 2px 0;text-align:center;text-transform:capitalize;color:#cfdbe8}
+#h-hoje{display:block;margin:6px auto 0;background:none;border:0;color:var(--verde);font-size:.95rem;padding:8px}
+#h-res{margin:8px 2px 0;font-size:1rem;text-align:center;color:#cfdbe8}
+#h-res b{color:#fff}#h-res .av{color:#ffd37a}
+.card{background:var(--card);border:1px solid var(--linha);border-radius:14px;padding:16px;margin-bottom:16px}
+h2{font-size:1.05rem;margin:0 0 8px}
+.grid4{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid4 label{display:block;font-size:.85rem;color:var(--mut);margin-bottom:4px}
+.hora{width:100%;padding:16px 6px;font-size:1.8rem;text-align:center;font-variant-numeric:tabular-nums;letter-spacing:1px;border:2px solid var(--linha);border-radius:12px;background:#fff;color:var(--tinta)}
+.hora:focus{border-color:var(--verde);outline:0}
+label.f{display:block;font-size:.85rem;color:var(--mut);margin:12px 0 4px}
+input.n{width:100%;padding:13px;font-size:1rem;border:1px solid var(--linha);border-radius:10px;background:#fff;color:var(--tinta)}
+input.n:focus,button:focus-visible{outline:3px solid var(--verde);outline-offset:1px}
+.chk{display:flex;gap:12px;align-items:center;padding:16px 0 0;font-size:1rem}
+.chk input{width:24px;height:24px}
+.btn{width:100%;min-height:56px;margin-top:16px;font-size:1.1rem;font-weight:700;border:0;border-radius:12px;background:var(--tinta);color:#fff}
+.btn.v{background:var(--verde);color:#04261d}
+.btn.sec{background:#fff;color:var(--neg);border:1px solid var(--neg);margin-top:10px;min-height:48px;font-size:1rem}
+.btn:active{transform:scale(.98)}
+.grade{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.k{background:var(--card);border:1px solid var(--linha);border-radius:14px;padding:12px}
+.k small{display:block;color:var(--mut);font-size:.8rem}
+.k b{font-size:1.4rem}
+.k.gr{grid-column:1/-1;background:var(--tinta);color:#fff;border-color:var(--tinta)}
+.k.gr small{color:#a9bbcc}.k.gr b{font-size:1.9rem;color:var(--verde)}
+.pos{color:var(--pos)}.neg{color:var(--neg)}
+.item{display:flex;justify-content:space-between;gap:10px;align-items:center;min-height:58px;padding:8px 0;border:0;border-bottom:1px solid var(--linha);width:100%;background:none;text-align:left;color:var(--tinta);font-size:.95rem}
+.item:last-child{border-bottom:0}
+.item small{display:block;color:var(--mut)}
+.item.vazio{color:var(--mut)}
+.mut{color:var(--mut);font-size:.85rem}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:#fff;border-top:1px solid var(--linha);padding-bottom:env(safe-area-inset-bottom,0);z-index:5}
+nav button{flex:1;min-height:60px;background:none;border:0;color:var(--mut);font-size:.95rem;font-weight:600;border-top:3px solid transparent}
+nav button.on{color:var(--tinta);border-top-color:var(--verde)}
+#login{max-width:380px;margin:10vh auto;padding:0 16px}
+#toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0));transform:translateX(-50%);background:var(--pos);color:#fff;padding:12px 18px;border-radius:12px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90%;text-align:center;z-index:9}
+#toast.show{opacity:1}#toast.err{background:var(--neg)}
+</style>
+</head>
+<body>
+
+<div id="login" class="hidden">
+  <div class="card">
+    <h1 style="margin:0 0 4px;font-size:1.5rem">Banco de Horas</h1>
+    <p class="mut" style="margin:0 0 8px">Entre para lançar seu ponto.</p>
+    <form onsubmit="entrar(event)">
+      <label class="f" for="email">E-mail</label>
+      <input class="n" id="email" type="email" autocomplete="username" required>
+      <label class="f" for="senha">Senha</label>
+      <input class="n" id="senha" type="password" autocomplete="current-password" required>
+      <button class="btn" type="submit">Entrar</button>
+    </form>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+  <main>
+
+    <section id="hoje" class="on">
+      <div class="hero">
+        <div class="dn">
+          <button class="seta" aria-label="Dia anterior" onclick="mudaDia(-1)">‹</button>
+          <input id="data" type="date" onchange="trocaData(this.value)">
+          <button class="seta" aria-label="Próximo dia" onclick="mudaDia(1)">›</button>
+        </div>
+        <div id="h-sem"></div>
+        <button id="h-hoje" class="hidden" onclick="trocaData(hoje())">Ir para hoje</button>
+        <p id="h-res"></p>
+      </div>
+      <div class="card">
+        <div class="grid4">
+          <div><label for="c-entrada">Entrada</label><input class="hora" id="c-entrada" type="text" inputmode="numeric" maxlength="5" placeholder="--:--" autocomplete="off" oninput="mascara(this)"></div>
+          <div><label for="c-saida_intervalo">Saída intervalo</label><input class="hora" id="c-saida_intervalo" type="text" inputmode="numeric" maxlength="5" placeholder="--:--" autocomplete="off" oninput="mascara(this)"></div>
+          <div><label for="c-volta_intervalo">Volta intervalo</label><input class="hora" id="c-volta_intervalo" type="text" inputmode="numeric" maxlength="5" placeholder="--:--" autocomplete="off" oninput="mascara(this)"></div>
+          <div><label for="c-saida">Saída</label><input class="hora" id="c-saida" type="text" inputmode="numeric" maxlength="5" placeholder="--:--" autocomplete="off" oninput="mascara(this)"></div>
+        </div>
+        <label class="chk"><input id="feriado" type="checkbox" onchange="live()"> Domingo ou feriado</label>
+        <button class="btn v" onclick="salvar()">Salvar dia</button>
+        <button id="apagar" class="btn sec hidden" onclick="apagar()">Apagar este dia</button>
+        <p class="mut" style="margin:12px 0 0">Digite só os números (0745 vira 07:45). Ao completar um horário, o cursor pula para o próximo.</p>
+      </div>
+    </section>
+
+    <section id="mes">
+      <div class="card"><label class="f" for="mesSel" style="margin-top:0">Mês</label><input class="n" id="mesSel" type="month" onchange="renderMes()"></div>
+      <div class="grade">
+        <div class="k"><small>Horas trabalhadas</small><b id="r-trab"></b></div>
+        <div class="k"><small>Saldo do mês</small><b id="r-saldo"></b></div>
+        <div class="k"><small>Saldo acumulado</small><b id="r-acum"></b></div>
+        <div class="k"><small>Dias registrados</small><b id="r-dias"></b></div>
+        <div class="k gr"><small>Extras a receber no mês (estimativa bruta)</small><b id="r-valor"></b></div>
+      </div>
+      <div class="card"><h2>Dias do mês</h2><p class="mut" style="margin:0 0 6px">Toque em um dia para lançar ou corrigir.</p><div id="lista"></div></div>
+    </section>
+
+    <section id="ajustes">
+      <div class="card">
+        <h2>Seus dados de cálculo</h2>
+        <form onsubmit="salvarCfg(event)">
+          <label class="f" for="c-sal">Salário mensal (R$)</label>
+          <input class="n" id="c-sal" type="number" min="0" step="0.01" inputmode="decimal">
+          <label class="f" for="c-jor">Jornada diária (horas, sem contar o intervalo)</label>
+          <input class="n" id="c-jor" type="time" value="08:00">
+          <label class="f" for="c-pct">Adicional da hora extra (%)</label>
+          <input class="n" id="c-pct" type="number" min="0" value="50" inputmode="numeric">
+          <label class="f" for="c-pctf">Adicional em domingo ou feriado (%)</label>
+          <input class="n" id="c-pctf" type="number" min="0" value="100" inputmode="numeric">
+          <label class="f" for="c-div">Divisor para o valor da hora (horas por mês)</label>
+          <input class="n" id="c-div" type="number" min="1" value="220" inputmode="numeric">
+          <button class="btn" type="submit">Salvar ajustes</button>
+        </form>
+        <p class="mut">O valor da hora é o salário dividido pelo divisor. O resultado é uma estimativa bruta: não inclui descontos, reflexos nem regras do acordo da sua empresa.</p>
+      </div>
+      <button class="btn sec" onclick="sair()">Sair da conta</button>
+    </section>
+
+  </main>
+  <nav>
+    <button class="on" data-t="hoje">Lançar</button>
+    <button data-t="mes">Mês</button>
+    <button data-t="ajustes">Ajustes</button>
+  </nav>
+</div>
+<div id="toast" role="status"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+const SUPABASE_URL = 'https://vflstqvrbmewhfkuhlmu.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_wYAcaBLlkKUovaqtV-K14g_reHQc9sa';
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const $ = id => document.getElementById(id);
+const CAMPOS = ['entrada', 'saida_intervalo', 'volta_intervalo', 'saida'];
+let uid = null, regs = [];
+let cfg = { salario: 0, jornada_min: 480, extra_pct: 50, extra_feriado_pct: 100, divisor: 220 };
+
+const pad = n => String(n).padStart(2, '0');
+const iso = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+const hoje = () => iso(new Date());
+let dia = hoje();
+const brl = n => Number(n || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+const toMin = t => { if (!t) return null; const p = t.split(':'); return +p[0] * 60 + +p[1]; };
+const hhmm = t => t ? t.slice(0, 5) : '';
+const horaOk = v => /^([01]\d|2[0-3]):[0-5]\d$/.test(v);
+const minParaHora = m => { m = ((Math.round(m) % 1440) + 1440) % 1440; return pad(Math.floor(m / 60)) + ':' + pad(m % 60); };
+function fmtH(min) { const s = min < 0 ? '-' : ''; const a = Math.abs(Math.round(min)); return s + Math.floor(a / 60) + 'h' + pad(a % 60); }
+const sinal = min => (min > 0 ? '+' : '') + fmtH(min);
+function toast(m, erro) { const t = $('toast'); t.textContent = m; t.className = 'show' + (erro ? ' err' : ''); setTimeout(() => { t.className = ''; }, 2500); }
+
+function trabalhados(r) {
+  const e = toMin(r.entrada), si = toMin(r.saida_intervalo), vi = toMin(r.volta_intervalo), s = toMin(r.saida);
+  if (e == null || s == null) return null;
+  let t;
+  if (si != null && vi != null) t = (si - e) + (s - vi);
+  else if (si == null && vi == null) t = s - e;
+  else return null;
+  return t >= 0 ? t : null;
+}
+function somar(rows) {
+  let trab = 0, saldoN = 0, extraF = 0, dias = 0;
+  rows.forEach(r => {
+    const t = trabalhados(r);
+    if (t == null) return;
+    dias++; trab += t;
+    if (r.feriado) extraF += t; else saldoN += t - cfg.jornada_min;
+  });
+  return { trab, saldoN, extraF, saldo: saldoN + extraF, dias };
+}
+function valorExtra(s) {
+  const vh = cfg.salario / cfg.divisor;
+  return Math.max(s.saldoN, 0) / 60 * vh * (1 + cfg.extra_pct / 100) + s.extraF / 60 * vh * (1 + cfg.extra_feriado_pct / 100);
+}
+
+async function mostrar() {
+  const { data } = await db.auth.getSession();
+  const logado = !!data.session;
+  uid = logado ? data.session.user.id : null;
+  $('login').classList.toggle('hidden', logado);
+  $('app').classList.toggle('hidden', !logado);
+  if (logado) carregar();
+}
+async function entrar(e) {
+  e.preventDefault();
+  const { error } = await db.auth.signInWithPassword({ email: $('email').value.trim(), password: $('senha').value });
+  if (error) return toast('E-mail ou senha incorretos', true);
+  mostrar();
+}
+async function sair() { await db.auth.signOut(); mostrar(); }
+
+document.querySelectorAll('nav button').forEach(b => b.addEventListener('click', () => aba(b.dataset.t)));
+function aba(n) {
+  document.querySelectorAll('nav button').forEach(x => x.classList.toggle('on', x.dataset.t === n));
+  document.querySelectorAll('section').forEach(s => s.classList.toggle('on', s.id === n));
+  window.scrollTo(0, 0);
+  if (n === 'mes') renderMes();
+}
+
+async function carregar() {
+  const [r, c] = await Promise.all([
+    db.from('registros_ponto').select('*').order('data', { ascending: false }),
+    db.from('config_ponto').select('*').maybeSingle()
+  ]);
+  if (r.error) return toast('Erro ao carregar: ' + r.error.message, true);
+  regs = r.data || [];
+  if (c.data) cfg = { salario: Number(c.data.salario), jornada_min: c.data.jornada_min, extra_pct: c.data.extra_pct, extra_feriado_pct: c.data.extra_feriado_pct, divisor: c.data.divisor };
+  $('c-sal').value = cfg.salario || '';
+  $('c-jor').value = pad(Math.floor(cfg.jornada_min / 60)) + ':' + pad(cfg.jornada_min % 60);
+  $('c-pct').value = cfg.extra_pct; $('c-pctf').value = cfg.extra_feriado_pct; $('c-div').value = cfg.divisor;
+  if (!$('mesSel').value) $('mesSel').value = hoje().slice(0, 7);
+  renderHoje(); renderMes();
+}
+
+const reg = () => regs.find(r => r.data === dia);
+function trocaData(v) { if (!v) return; dia = v; renderHoje(); }
+function mudaDia(n) { const d = new Date(dia + 'T12:00:00'); d.setDate(d.getDate() + n); trocaData(iso(d)); }
+
+function renderHoje() {
+  const r = reg();
+  $('data').value = dia;
+  $('h-hoje').classList.toggle('hidden', dia === hoje());
+  CAMPOS.forEach(c => { $('c-' + c).value = r ? hhmm(r[c]) : ''; });
+  $('feriado').checked = r ? !!r.feriado : false;
+  $('apagar').classList.toggle('hidden', !r);
+  live(r ? 'Registro salvo' : 'Sem registro neste dia');
+}
+
+function formVals() {
+  const v = {};
+  CAMPOS.forEach(c => { v[c] = $('c-' + c).value.trim() || null; });
+  v.feriado = $('feriado').checked;
+  return v;
+}
+function foraDeOrdem(v) {
+  const ms = CAMPOS.map(c => v[c] && horaOk(v[c]) ? toMin(v[c]) : null).filter(x => x != null);
+  return ms.some((x, i) => i > 0 && x < ms[i - 1]);
+}
+
+function live(status) {
+  const v = formVals();
+  const d = new Date(dia + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long' });
+  if (typeof status === 'string') live.st = status;
+  $('h-sem').textContent = d + (live.st ? ' · ' + live.st : '');
+  const el = $('h-res');
+  if (CAMPOS.some(c => v[c] && !horaOk(v[c]) && v[c].length === 5)) { el.innerHTML = '<span class="av">Horário inválido</span>'; return; }
+  if (foraDeOrdem(v)) { el.innerHTML = '<span class="av">Confira a ordem dos horários</span>'; return; }
+  const t = trabalhados(v);
+  if (t != null) {
+    const s = v.feriado ? t : t - cfg.jornada_min;
+    el.innerHTML = `Trabalhado <b>${fmtH(t)}</b> · saldo do dia <b>${sinal(s)}</b>`;
+    return;
+  }
+  const e = toMin(v.entrada), si = toMin(v.saida_intervalo), vi = toMin(v.volta_intervalo);
+  if ([v.entrada, v.saida_intervalo, v.volta_intervalo].every(x => x && horaOk(x)) && !v.saida && !v.feriado) {
+    el.innerHTML = `Para cumprir a jornada, saia às <b>${minParaHora(vi + cfg.jornada_min - (si - e))}</b>`;
+    return;
+  }
+  el.textContent = 'Digite os horários do comprovante.';
+}
+
+function mascara(el) {
+  let d = el.value.replace(/\D/g, '').slice(0, 4);
+  el.value = d.length >= 3 ? d.slice(0, 2) + ':' + d.slice(2) : d;
+  if (el.value.length === 5) {
+    const i = CAMPOS.indexOf(el.id.slice(2));
+    if (i < CAMPOS.length - 1) $('c-' + CAMPOS[i + 1]).focus(); else el.blur();
+  }
+  live();
+}
+
+async function salvar() {
+  const v = formVals();
+  for (const c of CAMPOS) if (v[c] && !horaOk(v[c])) return toast('Horário inválido: ' + v[c], true);
+  if (!CAMPOS.some(c => v[c])) return toast('Digite ao menos um horário', true);
+  if (foraDeOrdem(v) && !confirm('Os horários parecem fora de ordem. Salvar mesmo assim?')) return;
+  const { data, error } = await db.from('registros_ponto').upsert(Object.assign({ user_id: uid, data: dia }, v), { onConflict: 'user_id,data' }).select().single();
+  if (error) return toast(error.message, true);
+  regs = regs.filter(x => x.data !== dia).concat(data).sort((a, b) => b.data.localeCompare(a.data));
+  renderMes();
+  if (dia < hoje()) { toast('Dia salvo. Próximo dia'); mudaDia(1); }
+  else { toast('Dia salvo'); renderHoje(); }
+  if (navigator.vibrate) navigator.vibrate(40);
+}
+
+async function apagar() {
+  if (!confirm('Apagar o registro deste dia?')) return;
+  const { error } = await db.from('registros_ponto').delete().eq('data', dia);
+  if (error) return toast(error.message, true);
+  regs = regs.filter(x => x.data !== dia);
+  toast('Dia apagado'); renderHoje(); renderMes();
+}
+
+async function salvarCfg(e) {
+  e.preventDefault();
+  const j = toMin($('c-jor').value) || 480;
+  const { error } = await db.from('config_ponto').upsert({
+    user_id: uid, salario: parseFloat($('c-sal').value) || 0, jornada_min: j,
+    extra_pct: parseInt($('c-pct').value) || 0, extra_feriado_pct: parseInt($('c-pctf').value) || 0, divisor: parseInt($('c-div').value) || 220
+  }, { onConflict: 'user_id' });
+  if (error) return toast(error.message, true);
+  toast('Ajustes salvos'); carregar();
+}
+
+function renderMes() {
+  const mes = $('mesSel').value || hoje().slice(0, 7);
+  const rows = regs.filter(r => r.data.startsWith(mes));
+  const m = somar(rows), a = somar(regs);
+  const cor = n => n > 0 ? 'pos' : n < 0 ? 'neg' : '';
+  $('r-trab').textContent = fmtH(m.trab);
+  $('r-saldo').textContent = sinal(m.saldo); $('r-saldo').className = cor(m.saldo);
+  $('r-acum').textContent = sinal(a.saldo); $('r-acum').className = cor(a.saldo);
+  $('r-dias').textContent = m.dias;
+  $('r-valor').textContent = cfg.salario ? brl(valorExtra(m)) : 'Informe o salário em Ajustes';
+  const [ano, mm] = mes.split('-').map(Number);
+  const ultimo = mes === hoje().slice(0, 7) ? new Date().getDate() : new Date(ano, mm, 0).getDate();
+  let html = '';
+  for (let d = ultimo; d >= 1; d--) {
+    const ds = mes + '-' + pad(d);
+    const r = regs.find(x => x.data === ds);
+    const rot = new Date(ds + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' });
+    if (!r) { html += `<button class="item vazio" onclick="editar('${ds}')"><span>${rot}</span><span>sem registro</span></button>`; continue; }
+    const t = trabalhados(r);
+    const s = t == null ? null : (r.feriado ? t : t - cfg.jornada_min);
+    const ex = s == null ? '<span class="mut">incompleto</span>' : `<b class="${cor(s)}">${sinal(s)}</b>`;
+    const hs = CAMPOS.map(c => hhmm(r[c]) || '--:--').join(' · ');
+    html += `<button class="item" onclick="editar('${ds}')"><span>${rot}${r.feriado ? ' (dom/fer)' : ''}<small>${hs}${t != null ? ' · ' + fmtH(t) : ''}</small></span>${ex}</button>`;
+  }
+  $('lista').innerHTML = html || '<p class="mut">Nenhum dia neste mês.</p>';
+}
+function editar(d) { dia = d; renderHoje(); aba('hoje'); }
+
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+mostrar();
+</script>
+</body>
+</html>
