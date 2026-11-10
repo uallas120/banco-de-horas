@@ -1,365 +1,633 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Império dos Tênis">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#1b1740">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="icon-512.png">
-<link rel="icon" href="icon-192.png">
-<title>Império dos Tênis</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101827">
+<title>Meu Controle de Horas</title>
+
 <style>
-:root{--tinta:#1b1740;--ouro:#e8b923;--fundo:#f5f4f8;--card:#fff;--linha:#dedbe8;--mut:#6b6882;--ok:#1f7a4d;--ruim:#c0392b}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0}
-body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--fundo);color:var(--tinta);padding-bottom:calc(76px + env(safe-area-inset-bottom,0))}
-.hidden{display:none!important}
-header{background:var(--tinta);color:#fff;padding:calc(14px + env(safe-area-inset-top,0)) 16px 14px;display:flex;justify-content:space-between;align-items:center}
-header h1{margin:0;font:700 1.35rem Georgia,"Times New Roman",serif}
-header h1 span{color:var(--ouro)}
-header button{background:none;border:1px solid #ffffff55;color:#fff;border-radius:10px;padding:8px 14px;font-size:.9rem;min-height:40px}
-main{max-width:560px;margin:0 auto;padding:16px}
-section{display:none}section.on{display:block}
-.card{background:var(--card);border:1px solid var(--linha);border-radius:14px;padding:16px;margin-bottom:16px}
-h2{font-size:1.05rem;margin:0 0 12px}
-label.f{display:block;font-size:.85rem;color:var(--mut);margin:12px 0 4px}
-input,select{width:100%;padding:13px;font-size:1rem;border:1px solid var(--linha);border-radius:10px;background:#fff;color:var(--tinta)}
-input:focus,select:focus,button:focus-visible{outline:3px solid var(--ouro);outline-offset:1px}
-.row{display:flex;gap:10px}.row>*{flex:1}
-.btn{width:100%;min-height:54px;margin-top:16px;font-size:1.05rem;font-weight:700;border:0;border-radius:12px;background:var(--tinta);color:#fff}
-.btn.ouro{background:var(--ouro);color:var(--tinta)}
-.btn:active{transform:scale(.98)}
-.item{display:flex;justify-content:space-between;gap:12px;align-items:center;min-height:52px;padding:10px 0;border-bottom:1px solid var(--linha)}
-.item:last-child{border-bottom:0}
-.item b{font-size:1.15rem}.item b.baixo{color:var(--ruim)}
-.dir{display:flex;align-items:center;gap:10px}
-.del{min-height:44px;padding:0 12px;border:1px solid var(--ruim);background:#fff;color:var(--ruim);border-radius:10px;font-size:.85rem}
-.mut{color:var(--mut);font-size:.9rem}
-.total{margin:0 0 10px}
-.chips{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px}
-.chip{min-height:64px;border:2px solid var(--linha);border-radius:12px;background:#fff;color:var(--tinta);font-size:.95rem;font-weight:600;padding:6px}
-.chip small{display:block;font-weight:400;color:var(--mut)}
-.chip.on{border-color:var(--ouro);background:#fff8de}
-.valor{font:700 2rem Georgia,serif;margin:14px 0 0}
-.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}
-.seg button{min-height:48px;border:1px solid var(--linha);background:#fff;border-radius:10px;font-size:1rem;color:var(--tinta);font-weight:600}
-.seg button.on{background:var(--tinta);color:#fff;border-color:var(--tinta)}
-.fc{background:var(--tinta);color:#fff;border-radius:16px;padding:18px;margin-bottom:16px}
-.fc small{color:#bdb8dc;display:block}
-.fc .big{font:700 2.2rem Georgia,serif;color:var(--ouro);margin:4px 0}
-.linha{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--linha)}
-.linha:last-child{border-bottom:0}
-.linha small{display:block;color:var(--mut)}
-.linha b{font-size:1.1rem}
-.tot{font-weight:800}
-nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:#fff;border-top:1px solid var(--linha);padding-bottom:env(safe-area-inset-bottom,0);z-index:5}
-nav button{flex:1;min-height:60px;background:none;border:0;color:var(--mut);font-size:.9rem;font-weight:600;border-top:3px solid transparent}
-nav button.on{color:var(--tinta);border-top-color:var(--ouro)}
-#login{max-width:380px;margin:10vh auto;padding:0 16px}
-#toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0));transform:translateX(-50%);background:var(--ok);color:#fff;padding:12px 18px;border-radius:12px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90%;text-align:center;z-index:9}
-#toast.show{opacity:1}#toast.err{background:var(--ruim)}
+:root {
+  --bg:#0b1220;
+  --panel:#141f30;
+  --panel2:#1b293d;
+  --text:#f1f5f9;
+  --muted:#91a1b7;
+  --green:#27d69b;
+  --blue:#5599ff;
+  --orange:#ffb454;
+  --red:#ff6577;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,sans-serif;
+  padding-bottom:35px;
+}
+header{
+  padding:23px 18px;
+  background:linear-gradient(135deg,#142b46,#101827);
+  border-bottom:1px solid #26364c;
+}
+.header-content{max-width:650px;margin:auto}
+header small{color:var(--green);font-weight:bold;letter-spacing:2px}
+header h1{font-size:25px;margin:9px 0 5px}
+header p{color:var(--muted);font-size:13px;margin:0}
+main{max-width:650px;margin:auto;padding:16px}
+.card{
+  background:var(--panel);
+  border:1px solid #26364c;
+  border-radius:16px;
+  padding:17px;
+  margin-bottom:15px;
+}
+.section-title{
+  font-size:15px;
+  font-weight:bold;
+  margin:0 0 15px;
+}
+label{
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:7px;
+}
+input{
+  width:100%;
+  background:var(--panel2);
+  color:white;
+  border:1px solid #34465e;
+  border-radius:10px;
+  padding:13px;
+  font-size:17px;
+  outline:none;
+  min-width:0;
+}
+input:focus{border-color:var(--blue)}
+input[type=time]::-webkit-calendar-picker-indicator{
+  filter:invert(1);
+}
+.field{margin-bottom:13px}
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.stats{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.stat{
+  background:var(--panel2);
+  padding:14px;
+  border-radius:12px;
+}
+.stat small{color:var(--muted);font-size:11px}
+.stat strong{
+  display:block;
+  font-size:21px;
+  margin-top:7px;
+}
+.green{color:var(--green)}
+.blue{color:var(--blue)}
+.orange{color:var(--orange)}
+.week-nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+.week-nav button{
+  background:var(--panel2);
+  color:white;
+  border:1px solid #34465e;
+  border-radius:9px;
+  padding:10px 14px;
+  font-size:17px;
+}
+#weekLabel{text-align:center;font-size:13px;color:var(--muted)}
+.day-card{
+  background:var(--panel2);
+  border:1px solid #34465e;
+  border-radius:12px;
+  padding:14px;
+  margin-bottom:11px;
+}
+.day-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:14px;
+}
+.day-head strong{font-size:14px}
+.day-head small{color:var(--muted)}
+.day-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:11px;
+}
+.day-result{
+  display:flex;
+  justify-content:space-between;
+  border-top:1px solid #34465e;
+  margin-top:13px;
+  padding-top:12px;
+  font-size:12px;
+}
+.day-result span{color:var(--muted)}
+.day-result b{color:var(--green)}
+button.primary{
+  background:var(--green);
+  color:#071a16;
+  border:0;
+  width:100%;
+  padding:15px;
+  border-radius:11px;
+  font-size:15px;
+  font-weight:bold;
+  cursor:pointer;
+}
+button.secondary{
+  background:var(--panel2);
+  color:white;
+  border:1px solid #34465e;
+  width:100%;
+  padding:13px;
+  border-radius:11px;
+  margin-top:9px;
+  cursor:pointer;
+}
+button:active{opacity:.8}
+.money{
+  font-size:30px;
+  font-weight:bold;
+  color:var(--green);
+  margin:8px 0;
+}
+.note{
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.6;
+}
+.history-item{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:13px 0;
+  border-bottom:1px solid #34465e;
+  font-size:13px;
+}
+.history-item:last-child{border:0}
+.empty{text-align:center;color:var(--muted);padding:15px;font-size:13px}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:15px}
+@media(max-width:360px){
+  .day-grid{grid-template-columns:1fr 1fr;gap:7px}
+  .day-card{padding:10px}
+  input{padding:11px 7px;font-size:15px}
+}
 </style>
 </head>
+
 <body>
 
-<div id="login" class="hidden">
-  <div class="card">
-    <h1 style="font:700 1.6rem Georgia,serif;margin:0 0 4px">Império <span style="color:var(--ouro)">dos Tênis</span></h1>
-    <p class="mut" style="margin:0 0 8px">Entre para ver o estoque e o caixa.</p>
-    <form onsubmit="entrar(event)">
-      <label class="f" for="email">E-mail</label>
-      <input id="email" type="email" autocomplete="username" required>
-      <label class="f" for="senha">Senha</label>
-      <input id="senha" type="password" autocomplete="current-password" required>
-      <button class="btn" type="submit">Entrar</button>
-    </form>
+<header>
+ <div class="header-content">
+  <small>CONTROLE PESSOAL</small>
+  <h1>Meu Controle de Horas</h1>
+  <p>Seu trabalho, suas horas e seu dinheiro.</p>
+ </div>
+</header>
+
+<main>
+
+<!-- CONFIGURAÇÕES -->
+<section class="card">
+ <h2 class="section-title">⚙️ Configurações salariais</h2>
+
+ <div class="field">
+  <label>Meu salário mensal (R$)</label>
+  <input type="number" id="salary" placeholder="Ex.: 2477.07"
+   min="0" step="0.01">
+ </div>
+
+ <div class="grid">
+  <div class="field">
+   <label>Divisor mensal de horas</label>
+   <input type="number" id="divisor" value="220" min="1">
   </div>
-</div>
+  <div class="field">
+   <label>Adicional de hora extra (%)</label>
+   <input type="number" id="premium" value="50" min="0">
+  </div>
+ </div>
 
-<div id="app" class="hidden">
-  <header>
-    <h1>Império <span>dos Tênis</span></h1>
-    <button onclick="sair()">Sair</button>
-  </header>
-  <main>
+ <p class="note">
+ O divisor 220 e o adicional de 50% são referências iniciais.
+ Confira os percentuais e a jornada aplicáveis ao seu contrato ou acordo coletivo.
+ </p>
+</section>
 
-    <section id="estoque" class="on">
-      <div class="card">
-        <p class="total mut" id="total"></p>
-        <input id="busca" type="search" placeholder="Buscar modelo, marca, cor ou tamanho" oninput="listar()">
-        <div id="lista"></div>
-      </div>
-    </section>
+<!-- SEMANA -->
+<section class="card">
+ <h2 class="section-title">📅 Minha semana</h2>
 
-    <section id="entrada">
-      <div class="card">
-        <h2>Chegou mais de um sapato já cadastrado</h2>
-        <form onsubmit="entrada(event)">
-          <label class="f" for="ent-prod">Sapato</label>
-          <select id="ent-prod"></select>
-          <label class="f" for="ent-qtd">Quantidade que chegou</label>
-          <input id="ent-qtd" type="number" min="1" value="1" inputmode="numeric" required>
-          <button class="btn" type="submit">Registrar entrada</button>
-        </form>
-      </div>
-      <div class="card">
-        <h2>Cadastrar sapato novo</h2>
-        <form onsubmit="novo(event)">
-          <label class="f" for="n-modelo">Modelo</label>
-          <input id="n-modelo" required>
-          <div class="row">
-            <div><label class="f" for="n-marca">Marca</label><input id="n-marca"></div>
-            <div><label class="f" for="n-cor">Cor</label><input id="n-cor"></div>
-          </div>
-          <div class="row">
-            <div><label class="f" for="n-tam">Tamanho</label><input id="n-tam" inputmode="numeric"></div>
-            <div><label class="f" for="n-qtd">Quantidade</label><input id="n-qtd" type="number" min="0" value="1" inputmode="numeric"></div>
-          </div>
-          <button class="btn" type="submit">Cadastrar sapato</button>
-        </form>
-      </div>
-    </section>
+ <div class="week-nav">
+  <button onclick="changeWeek(-1)">‹</button>
+  <div id="weekLabel">Semana</div>
+  <button onclick="changeWeek(1)">›</button>
+ </div>
+</section>
 
-    <section id="venda">
-      <div class="card">
-        <h2>Registrar venda</h2>
-        <form onsubmit="vender(event)">
-          <label class="f" for="ven-prod">Sapato</label>
-          <select id="ven-prod"></select>
-          <label class="f" for="ven-qtd">Quantidade</label>
-          <input id="ven-qtd" type="number" min="1" value="1" inputmode="numeric" oninput="calc()" required>
-          <label class="f">Forma de pagamento</label>
-          <div class="chips" id="chips"></div>
-          <p class="valor" id="ven-valor"></p>
-          <button class="btn ouro" type="submit">Registrar venda</button>
-        </form>
-      </div>
-    </section>
+<!-- RESUMO -->
+<section class="card">
+ <h2 class="section-title">📊 Resumo semanal</h2>
 
-    <section id="fechamento">
-      <div class="card">
-        <label class="f" for="f-data" style="margin-top:0">Data de referência</label>
-        <input id="f-data" type="date" onchange="fechar()">
-        <div class="seg" id="seg">
-          <button data-p="dia" class="on">Dia</button>
-          <button data-p="semana">Semana</button>
-          <button data-p="mes">Mês</button>
-        </div>
-      </div>
-      <div class="fc">
-        <small id="f-rot"></small>
-        <div class="big" id="f-total"></div>
-        <small id="f-resumo"></small>
-      </div>
-      <div class="card">
-        <h2>Por forma de pagamento</h2>
-        <div id="f-formas"></div>
-        <div class="linha tot"><span>Soma total</span><b id="f-soma"></b></div>
-      </div>
-      <button class="btn" onclick="compartilhar()">Compartilhar fechamento</button>
-    </section>
+ <div class="stats">
+  <div class="stat">
+   <small>Horas trabalhadas</small>
+   <strong id="totalHours">00:00</strong>
+  </div>
+  <div class="stat">
+   <small>Horas extras</small>
+   <strong class="orange" id="extraHours">00:00</strong>
+  </div>
+  <div class="stat">
+   <small>Valor por hora</small>
+   <strong class="blue" id="hourValue">R$ 0,00</strong>
+  </div>
+  <div class="stat">
+   <small>Valor das extras</small>
+   <strong class="green" id="extraValue">R$ 0,00</strong>
+  </div>
+ </div>
+</section>
 
-  </main>
-  <nav>
-    <button class="on" data-t="estoque">Estoque</button>
-    <button data-t="entrada">Entrada</button>
-    <button data-t="venda">Venda</button>
-    <button data-t="fechamento">Fechamento</button>
-  </nav>
-</div>
-<div id="toast" role="status"></div>
+<!-- REGISTRO -->
+<section class="card">
+ <h2 class="section-title">🕒 Registrar meu ponto</h2>
+ <p class="note">
+ Informe manualmente os horários que você registrou na empresa.
+ Não é necessário conectar ao relógio de ponto.
+ </p>
+ <div id="days"></div>
+ <button class="primary" onclick="saveWeek()">
+ SALVAR REGISTROS DA SEMANA
+ </button>
+</section>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<!-- HISTÓRICO -->
+<section class="card">
+ <h2 class="section-title">📚 Histórico de semanas</h2>
+ <div id="history"></div>
+ <button class="secondary" onclick="exportData()">
+ EXPORTAR MEUS REGISTROS
+ </button>
+</section>
+
+<footer>
+ Meu Controle de Horas • Seus dados ficam salvos neste dispositivo.
+</footer>
+
+</main>
+
 <script>
-const SUPABASE_URL = 'https://tqthagsrawqjnbbyeazc.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_Ie6TnUWSjGJ3gsPwyYTPtw_v1wNkiVa';
-// Preços por forma de pagamento (mude aqui se precisar)
-const PRECO = { pix: 85, dinheiro: 85, cartao: 90 };
-const FORMAS = [['pix', 'Pix'], ['dinheiro', 'Dinheiro'], ['cartao', 'Cartão']];
+const STORAGE_KEY = "meuControleHoras_v1";
+const SETTINGS_KEY = "meuControleHoras_config";
 
-const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-const $ = id => document.getElementById(id);
-let produtos = [], forma = 'pix', periodo = 'dia', ultimoTexto = '';
+const dayNames = [
+ "Segunda-feira",
+ "Terça-feira",
+ "Quarta-feira",
+ "Quinta-feira",
+ "Sexta-feira",
+ "Sábado"
+];
 
-const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const brl = n => Number(n || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-const nome = p => [p.modelo, p.marca, p.cor, p.tamanho ? 'nº ' + p.tamanho : ''].filter(Boolean).join(' · ');
-const pad = n => String(n).padStart(2, '0');
-const iso = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
-const pares = n => n + (n === 1 ? ' par' : ' pares');
+// Jornada planejada: 07h às 17h, com 1h de intervalo.
+// Sábado: 07h às 11h.
+const defaults = [
+ {planned:540},
+ {planned:540},
+ {planned:540},
+ {planned:540},
+ {planned:540},
+ {planned:240}
+];
 
-function toast(msg, erro) {
-  const t = $('toast');
-  t.textContent = msg;
-  t.className = 'show' + (erro ? ' err' : '');
-  setTimeout(() => { t.className = ''; }, 3000);
+let currentMonday = getMonday(new Date());
+let records = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+
+function getMonday(date){
+ const d = new Date(date);
+ d.setHours(0,0,0,0);
+ let day = d.getDay();
+ d.setDate(d.getDate() + (day === 0 ? -6 : 1-day));
+ return d;
 }
 
-async function mostrar() {
-  const { data } = await db.auth.getSession();
-  const logado = !!data.session;
-  $('login').classList.toggle('hidden', logado);
-  $('app').classList.toggle('hidden', !logado);
-  if (logado) carregar();
-}
-async function entrar(e) {
-  e.preventDefault();
-  const { error } = await db.auth.signInWithPassword({ email: $('email').value.trim(), password: $('senha').value });
-  if (error) return toast('E-mail ou senha incorretos', true);
-  mostrar();
-}
-async function sair() { await db.auth.signOut(); mostrar(); }
-
-document.querySelectorAll('nav button').forEach(b => b.addEventListener('click', () => {
-  document.querySelectorAll('nav button').forEach(x => x.classList.toggle('on', x === b));
-  document.querySelectorAll('section').forEach(s => s.classList.toggle('on', s.id === b.dataset.t));
-  window.scrollTo(0, 0);
-  if (b.dataset.t === 'fechamento') fechar();
-}));
-
-async function carregar() {
-  const { data, error } = await db.from('produtos').select('*').eq('ativo', true).order('modelo');
-  if (error) return toast('Erro ao carregar: ' + error.message, true);
-  produtos = data;
-  listar(); opcoes(); desenharChips(); calc();
-  if (!$('f-data').value) $('f-data').value = iso(new Date());
+function dateKey(date){
+ return date.getFullYear() + "-" +
+ String(date.getMonth()+1).padStart(2,"0") + "-" +
+ String(date.getDate()).padStart(2,"0");
 }
 
-function listar() {
-  const q = $('busca').value.toLowerCase();
-  const l = produtos.filter(p => nome(p).toLowerCase().includes(q));
-  $('lista').innerHTML = l.map(p => `<div class="item"><span>${esc(nome(p))}</span><span class="dir"><b class="${p.estoque <= 2 ? 'baixo' : ''}">${p.estoque}</b><button class="del" onclick="apagar(${p.id})">Apagar</button></span></div>`).join('')
-    || '<p class="mut">Nenhum sapato encontrado. Cadastre o primeiro na aba Entrada.</p>';
-  $('total').textContent = produtos.reduce((s, p) => s + p.estoque, 0) + ' pares em estoque (vermelho: 2 ou menos)';
-}
-function opcoes() {
-  const o = produtos.map(p => `<option value="${p.id}">${esc(nome(p))} (${p.estoque})</option>`).join('');
-  $('ent-prod').innerHTML = o;
-  $('ven-prod').innerHTML = o;
+function addDays(date,n){
+ const d = new Date(date);
+ d.setDate(d.getDate()+n);
+ return d;
 }
 
-async function novo(e) {
-  e.preventDefault();
-  const qtd = parseInt($('n-qtd').value) || 0;
-  const { data, error } = await db.from('produtos').insert({
-    modelo: $('n-modelo').value.trim(),
-    marca: $('n-marca').value.trim() || null,
-    cor: $('n-cor').value.trim() || null,
-    tamanho: $('n-tam').value.trim() || null
-  }).select().single();
-  if (error) return toast(error.message, true);
-  if (qtd > 0) {
-    const r = await db.from('movimentos').insert({ produto_id: data.id, tipo: 'entrada', quantidade: qtd });
-    if (r.error) return toast(r.error.message, true);
-  }
-  e.target.reset(); $('n-qtd').value = 1;
-  toast('Sapato cadastrado'); carregar();
+function formatDate(date){
+ return date.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"});
 }
 
-async function entrada(e) {
-  e.preventDefault();
-  const q = parseInt($('ent-qtd').value) || 0;
-  if (!$('ent-prod').value || q < 1) return toast('Escolha o sapato e a quantidade', true);
-  const { error } = await db.from('movimentos').insert({ produto_id: $('ent-prod').value, tipo: 'entrada', quantidade: q });
-  if (error) return toast(error.message, true);
-  $('ent-qtd').value = 1;
-  toast('Entrada registrada'); carregar();
+function weekKey(){
+ return dateKey(currentMonday);
 }
 
-async function apagar(id) {
-  const p = produtos.find(x => x.id === id);
-  if (!p) return;
-  if (!confirm('Apagar do estoque: ' + nome(p) + '?\nO histórico de vendas e o fechamento são mantidos.')) return;
-  const { error } = await db.from('produtos').update({ ativo: false }).eq('id', id);
-  if (error) return toast(error.message, true);
-  toast('Item apagado'); carregar();
+function money(value){
+ return value.toLocaleString("pt-BR",{
+  style:"currency",currency:"BRL"
+ });
 }
 
-function desenharChips() {
-  $('chips').innerHTML = FORMAS.map(f => `<button type="button" class="chip ${f[0] === forma ? 'on' : ''}" onclick="escolher('${f[0]}')">${f[1]}<small>${brl(PRECO[f[0]])}</small></button>`).join('');
-}
-function escolher(f) { forma = f; desenharChips(); calc(); }
-function calc() {
-  const q = parseInt($('ven-qtd').value) || 0;
-  $('ven-valor').textContent = 'Total: ' + brl(q * PRECO[forma]);
-}
-
-async function vender(e) {
-  e.preventDefault();
-  const p = produtos.find(x => String(x.id) === $('ven-prod').value);
-  const q = parseInt($('ven-qtd').value) || 0;
-  if (!p || q < 1) return toast('Escolha o sapato e a quantidade', true);
-  if (q > p.estoque) return toast('Só há ' + p.estoque + ' em estoque', true);
-  const { error } = await db.from('movimentos').insert({ produto_id: p.id, tipo: 'venda', quantidade: q, forma_pagamento: forma, valor: q * PRECO[forma] });
-  if (error) return toast(error.message, true);
-  $('ven-qtd').value = 1; calc();
-  if (navigator.vibrate) navigator.vibrate(40);
-  toast('Venda registrada: ' + brl(q * PRECO[forma])); carregar();
+function readSettings(){
+ return {
+  salary: Number(document.getElementById("salary").value)||0,
+  divisor: Number(document.getElementById("divisor").value)||220,
+  premium: Number(document.getElementById("premium").value)||0
+ };
 }
 
-document.querySelectorAll('#seg button').forEach(b => b.addEventListener('click', () => {
-  periodo = b.dataset.p;
-  document.querySelectorAll('#seg button').forEach(x => x.classList.toggle('on', x === b));
-  fechar();
-}));
-
-function intervalo() {
-  const ref = new Date(($('f-data').value || iso(new Date())) + 'T00:00:00');
-  let ini, fim, rot;
-  if (periodo === 'dia') {
-    ini = new Date(ref); fim = new Date(ref); fim.setDate(fim.getDate() + 1);
-    rot = ref.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
-  } else if (periodo === 'semana') {
-    ini = new Date(ref); ini.setDate(ini.getDate() - ((ini.getDay() + 6) % 7));
-    fim = new Date(ini); fim.setDate(fim.getDate() + 7);
-    const ultimo = new Date(fim); ultimo.setDate(ultimo.getDate() - 1);
-    const f = d => d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
-    rot = 'Semana de ' + f(ini) + ' a ' + f(ultimo);
-  } else {
-    ini = new Date(ref.getFullYear(), ref.getMonth(), 1);
-    fim = new Date(ref.getFullYear(), ref.getMonth() + 1, 1);
-    rot = ref.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
-  }
-  return [ini, fim, rot];
+function saveSettings(){
+ localStorage.setItem(SETTINGS_KEY,JSON.stringify(readSettings()));
+ updateSummary();
 }
 
-async function fechar() {
-  const [ini, fim, rot] = intervalo();
-  let linhas = [], de = 0;
-  while (true) {
-    const { data, error } = await db.from('movimentos').select('quantidade,forma_pagamento,valor')
-      .eq('tipo', 'venda').gte('criado_em', ini.toISOString()).lt('criado_em', fim.toISOString()).range(de, de + 999);
-    if (error) return toast('Erro no fechamento: ' + error.message, true);
-    linhas = linhas.concat(data);
-    if (data.length < 1000) break;
-    de += 1000;
-  }
-  const t = {}; FORMAS.forEach(f => { t[f[0]] = { p: 0, v: 0, n: 0 }; });
-  linhas.forEach(m => { const x = t[m.forma_pagamento]; if (!x) return; x.p += m.quantidade; x.v += Number(m.valor); x.n++; });
-  const P = FORMAS.reduce((s, f) => s + t[f[0]].p, 0), V = FORMAS.reduce((s, f) => s + t[f[0]].v, 0), N = FORMAS.reduce((s, f) => s + t[f[0]].n, 0);
-  $('f-rot').textContent = rot;
-  $('f-total').textContent = brl(V);
-  $('f-resumo').textContent = pares(P) + ' vendidos em ' + N + (N === 1 ? ' venda' : ' vendas');
-  $('f-formas').innerHTML = FORMAS.map(f => `<div class="linha"><span>${f[1]}<small>${pares(t[f[0]].p)} · ${t[f[0]].n} ${t[f[0]].n === 1 ? 'venda' : 'vendas'}</small></span><b>${brl(t[f[0]].v)}</b></div>`).join('');
-  $('f-soma').textContent = brl(V);
-  ultimoTexto = 'Império dos Tênis - ' + rot + '\n' + pares(P) + ' vendidos\n' +
-    FORMAS.map(f => f[1] + ': ' + pares(t[f[0]].p) + ' - ' + brl(t[f[0]].v)).join('\n') + '\nTotal: ' + brl(V);
+function loadSettings(){
+ const s=JSON.parse(localStorage.getItem(SETTINGS_KEY)||"{}");
+ if(s.salary!==undefined) document.getElementById("salary").value=s.salary;
+ if(s.divisor) document.getElementById("divisor").value=s.divisor;
+ if(s.premium!==undefined) document.getElementById("premium").value=s.premium;
+
+ ["salary","divisor","premium"].forEach(id=>{
+  document.getElementById(id).addEventListener("input",saveSettings);
+ });
 }
 
-async function compartilhar() {
-  if (!ultimoTexto) await fechar();
-  try {
-    if (navigator.share) await navigator.share({ text: ultimoTexto });
-    else { await navigator.clipboard.writeText(ultimoTexto); toast('Fechamento copiado'); }
-  } catch (e) { /* cancelado */ }
+function getDuration(start,end){
+ if(!start || !end) return 0;
+ const [h1,m1]=start.split(":").map(Number);
+ const [h2,m2]=end.split(":").map(Number);
+ let diff=(h2*60+m2)-(h1*60+m1);
+ if(diff<0) diff+=1440;
+ return diff;
 }
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
-mostrar();
+function calculate(day){
+ const start=day.start||"";
+ const breakStart=day.breakStart||"";
+ const breakEnd=day.breakEnd||"";
+ const end=day.end||"";
+
+ if(!start || !end) return {worked:0,extra:0};
+
+ let worked=getDuration(start,end);
+
+ if(breakStart && breakEnd){
+  worked-=getDuration(breakStart,breakEnd);
+ }
+
+ worked=Math.max(0,worked);
+ const planned=Number(day.planned)||0;
+ return {
+  worked,
+  extra:Math.max(0,worked-planned)
+ };
+}
+
+function renderDays(){
+ const container=document.getElementById("days");
+ container.innerHTML="";
+
+ const monday=currentMonday;
+ const key=weekKey();
+ const saved=records[key]||[];
+
+ document.getElementById("weekLabel").innerText=
+  formatDate(monday)+" até "+formatDate(addDays(monday,5));
+
+ dayNames.forEach((name,i)=>{
+  const date=addDays(monday,i);
+  const day=saved[i]||{};
+
+  const planned=day.planned!==undefined?
+   day.planned:defaults[i].planned;
+
+  const div=document.createElement("div");
+  div.className="day-card";
+
+  div.innerHTML=`
+   <div class="day-head">
+    <strong>${name}</strong>
+    <small>${formatDate(date)}</small>
+   </div>
+
+   <div class="day-grid">
+    <div>
+     <label>Entrada</label>
+     <input type="time" id="start${i}" value="${day.start||""}">
+    </div>
+    <div>
+     <label>Saída</label>
+     <input type="time" id="end${i}" value="${day.end||""}">
+    </div>
+    <div>
+     <label>Início do intervalo</label>
+     <input type="time" id="breakStart${i}"
+      value="${day.breakStart||""}">
+    </div>
+    <div>
+     <label>Fim do intervalo</label>
+     <input type="time" id="breakEnd${i}"
+      value="${day.breakEnd||""}">
+    </div>
+    <div>
+     <label>Jornada prevista (minutos)</label>
+     <input type="number" id="planned${i}"
+      min="0" value="${planned}" step="15">
+    </div>
+   </div>
+
+   <div class="day-result">
+    <span>Trabalhadas: <b id="worked${i}">00:00</b></span>
+    <span>Extras: <b id="extra${i}">00:00</b></span>
+   </div>
+  `;
+
+  container.appendChild(div);
+
+  ["start","end","breakStart","breakEnd","planned"].forEach(field=>{
+   document.getElementById(field+i).addEventListener("input",()=>{
+    updateDay(i);
+    updateSummary();
+   });
+  });
+
+  updateDay(i);
+ });
+
+ updateSummary();
+}
+
+function readDay(i){
+ return {
+  start:document.getElementById("start"+i).value,
+  end:document.getElementById("end"+i).value,
+  breakStart:document.getElementById("breakStart"+i).value,
+  breakEnd:document.getElementById("breakEnd"+i).value,
+  planned:Number(document.getElementById("planned"+i).value)||0
+ };
+}
+
+function timeText(minutes){
+ const h=Math.floor(minutes/60);
+ const m=minutes%60;
+ return String(h).padStart(2,"0")+":"+
+  String(m).padStart(2,"0");
+}
+
+function updateDay(i){
+ const result=calculate(readDay(i));
+ document.getElementById("worked"+i).innerText=timeText(result.worked);
+ document.getElementById("extra"+i).innerText=timeText(result.extra);
+}
+
+function getWeekData(){
+ return dayNames.map((_,i)=>readDay(i));
+}
+
+function updateSummary(){
+ if(!document.getElementById("start0")) return;
+
+ const settings=readSettings();
+ let total=0;
+ let extra=0;
+
+ getWeekData().forEach(day=>{
+  const result=calculate(day);
+  total+=result.worked;
+  extra+=result.extra;
+ });
+
+ const hourly=settings.salary/settings.divisor;
+ const extraMoney=extra/60*hourly*(1+settings.premium/100);
+
+ document.getElementById("totalHours").innerText=timeText(total);
+ document.getElementById("extraHours").innerText=timeText(extra);
+ document.getElementById("hourValue").innerText=money(hourly);
+ document.getElementById("extraValue").innerText=money(extraMoney);
+}
+
+function saveWeek(){
+ records[weekKey()]=getWeekData();
+ localStorage.setItem(STORAGE_KEY,JSON.stringify(records));
+ saveSettings();
+ renderHistory();
+ alert("Registros da semana salvos!");
+}
+
+function changeWeek(direction){
+ // Salva os dados atuais antes de mudar de semana.
+ records[weekKey()]=getWeekData();
+ localStorage.setItem(STORAGE_KEY,JSON.stringify(records));
+
+ currentMonday=addDays(currentMonday,direction*7);
+ renderDays();
+ renderHistory();
+}
+
+function renderHistory(){
+ const container=document.getElementById("history");
+ container.innerHTML="";
+
+ const keys=Object.keys(records).sort().reverse();
+
+ if(!keys.length){
+  container.innerHTML='<div class="empty">Nenhum registro salvo ainda.</div>';
+  return;
+ }
+
+ keys.forEach(key=>{
+  const days=records[key];
+  let total=0;
+  let extra=0;
+
+  days.forEach(day=>{
+   const result=calculate(day);
+   total+=result.worked;
+   extra+=result.extra;
+  });
+
+  const salary=readSettings();
+  const hourly=salary.salary/salary.divisor;
+  const value=extra/60*hourly*(1+salary.premium/100);
+
+  const [y,m,d]=key.split("-").map(Number);
+  const date=new Date(y,m-1,d);
+  const finish=addDays(date,5);
+
+  const item=document.createElement("div");
+  item.className="history-item";
+
+  const left=document.createElement("span");
+  left.innerHTML="<b>"+formatDate(date)+" - "+formatDate(finish)+
+   "</b><br><span style='color:var(--muted)'>"+
+   timeText(total)+" trabalhadas • "+timeText(extra)+" extras</span>";
+
+  const right=document.createElement("span");
+  right.style.textAlign="right";
+  right.innerHTML="<b style='color:var(--green)'>"+money(value)+
+   "</b><br><span style='color:var(--muted)'>Horas extras</span>";
+
+  item.append(left,right);
+  item.addEventListener("click",()=>{
+   currentMonday=date;
+   renderDays();
+   window.scrollTo({top:0,behavior:"smooth"});
+  });
+
+  container.appendChild(item);
+ });
+}
+
+function exportData(){
+ const content={
+  configuracoes:readSettings(),
+  semanas:records
+ };
+
+ const blob=new Blob(
+  [JSON.stringify(content,null,2)],
+  {type:"application/json"}
+ );
+
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");
+ a.href=url;
+ a.download="meu-controle-de-horas.json";
+ a.click();
+ URL.revokeObjectURL(url);
+}
+
+loadSettings();
+renderDays();
+renderHistory();
 </script>
+
 </body>
 </html>
